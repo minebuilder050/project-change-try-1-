@@ -98,7 +98,7 @@ class GameDialogDispatcher {
 
             newDialog(diceDialog.piece) {
                 message {
-                    Component.text("보드를 클릭해 주사위를 굴리세요!")
+                    Component.text("click the board to roll the dice!")
                 }
                 button(PaperGameConfig.centerBox) {
                     onClick { player, _, _ ->
@@ -112,7 +112,7 @@ class GameDialogDispatcher {
                         disposeCurrentDialog()
                     }
                 }
-                timeout(Component.text("주사위"), 15L * 1000L) {
+                timeout(Component.text("dice"), 15L * 1000L) {
                     dices.filter { it.isBeforeRoll }.forEach { it.roll(Vector(0.0, 1.0, 0.0)) }
                 }
             }
@@ -135,7 +135,7 @@ class GameDialogDispatcher {
 
             val title = Component.text()
             if (dices.count() > 1 && dices.all { it.value == dices.first().value } && diceDialog.message == GameMessage.ROLL_THE_DICE) {
-                title.append(Component.text("더블! ").decorate(TextDecoration.BOLD))
+                title.append(Component.text("double!! ").decorate(TextDecoration.BOLD))
             }
             dices.forEachIndexed { index, dice ->
                 if (index != 0) title.append(Component.text("+"))
@@ -173,15 +173,15 @@ class GameDialogDispatcher {
 
             newDialog(piece) {
                 val info = when (val value = upgradeDialog.level.value) {
-                    0 -> "땅" to "구입"
-                    1 -> "빌라" to "건설"
-                    2 -> "빌딩" to "건설"
-                    3 -> "호텔" to "건설"
-                    4 -> "랜드마크" to "건설"
+                    0 -> "land" to "bought"
+                    1 -> "villa" to "build"
+                    2 -> "skyscraper" to "build
+                    3 -> "hotel" to "build"
+                    4 -> "landmark" to "build"
                     else -> error("Unknown property level $value")
                 }
                 message {
-                    Component.text("부동산을 클릭하여 업그레이드하세요")
+                    Component.text("click your land to upgrade!")
                 }
                 actionMessage {
                     val text = Component.text()
@@ -189,13 +189,13 @@ class GameDialogDispatcher {
                     text.append(Component.space())
                     text.append(Component.text(info.second))
                     text.append(Component.space())
-                    text.append(Component.text("비용: "))
+                    text.append(Component.text("cost: "))
                     text.append(Component.text(level.costs).color(NamedTextColor.DARK_GREEN))
                     text.build()
                 }
                 button(paperProperty.box) {
                     actionMessage {
-                        Component.text("확인").color(NamedTextColor.DARK_AQUA)
+                        Component.text("confirm").color(NamedTextColor.DARK_AQUA)
                     }
                     onClick { _, _, _ ->
                         channel.trySend(true)
@@ -204,14 +204,14 @@ class GameDialogDispatcher {
                 }
                 button(PaperGameConfig.centerBox) {
                     actionMessage {
-                        Component.text("취소").color(NamedTextColor.RED)
+                        Component.text("cancelled").color(NamedTextColor.RED)
                     }
                     onClick { _, _, _ ->
                         channel.trySend(false)
                         disposeCurrentDialog()
                     }
                 }
-                timeout(Component.text("부동산 업그레이드"), 15L * 1000L) {
+                timeout(Component.text("upgrade building"), 15L * 1000L) {
                     channel.trySend(false)
                 }
             }
@@ -236,17 +236,17 @@ class GameDialogDispatcher {
 
             newDialog(piece) {
                 message {
-                    Component.text("부동산을 클릭하여 인수하세요")
+                    Component.text("click the land to buy it")
                 }
                 actionMessage {
                     val text = Component.text()
-                    text.append(Component.text("인수 비용: "))
+                    text.append(Component.text("cost: "))
                     text.append(Component.text(acqDialog.costs).color(NamedTextColor.DARK_GREEN))
                     text.build()
                 }
                 button(paperProperty.box) {
                     actionMessage {
-                        Component.text("확인")
+                        Component.text("confirm")
                     }
                     onClick { _, _, _ ->
                         channel.trySend(true)
@@ -255,14 +255,14 @@ class GameDialogDispatcher {
                 }
                 button(PaperGameConfig.centerBox) {
                     actionMessage {
-                        Component.text("취소")
+                        Component.text("cancelled")
                     }
                     onClick { _, _, _ ->
                         channel.trySend(false)
                         disposeCurrentDialog()
                     }
                 }
-                timeout(Component.text("부동산 인수"), 10L * 1000L) {
+                timeout(Component.text("bought the land"), 10L * 1000L) {
                     channel.trySend(false)
                 }
             }
@@ -286,11 +286,11 @@ class GameDialogDispatcher {
 
             newDialog(piece) {
                 message {
-                    Component.text("매각할 부동산을 선택하세요")
+                    Component.text("choose the land to sell")
                 }
                 actionMessage {
                     val text = Component.text()
-                    text.append(Component.text("필요금액 "))
+                    text.append(Component.text("needed cost "))
                     text.append(
                         Component.text(piece.balance + selected.sumOf { it.zone.assets })
                             .color(NamedTextColor.DARK_GREEN)
@@ -304,7 +304,7 @@ class GameDialogDispatcher {
                     button(paperProperty.box) {
                         display(
                             paperProperty.tollsTag.location.apply { y -= 0.25 },
-                            Component.text("매각금액: ${paperProperty.zone.assets}").color(NamedTextColor.RED)
+                            Component.text("sale amount: ${paperProperty.zone.assets}").color(NamedTextColor.RED)
                         )
 
                         actionMessage {
@@ -312,12 +312,12 @@ class GameDialogDispatcher {
                             text.content(paperProperty.name)
 
                             if (paperProperty !in selected) {
-                                text.append(Component.text(" 선택 "))
+                                text.append(Component.text(" confirm "))
                                     .append(
                                         Component.text("+${paperProperty.zone.assets}").color(NamedTextColor.DARK_AQUA)
                                     )
                             } else {
-                                text.append(Component.text(" 선택취소 "))
+                                text.append(Component.text(" canceled choise "))
                                     .append(Component.text("-${paperProperty.zone.assets}").color(NamedTextColor.RED))
                             }
                             text.build()
@@ -345,7 +345,7 @@ class GameDialogDispatcher {
                             }
                         }
 
-                        Component.text().content("자동선택($listString) ")
+                        Component.text().content("auto choose($listString) ")
                             .append(
                                 Component.text("+${defaultSelected.sumOf { it.assets }}")
                                     .color(NamedTextColor.DARK_AQUA)
@@ -363,7 +363,7 @@ class GameDialogDispatcher {
                     }
                 }
 
-                timeout(Component.text("강제 매각"), 60L * 1000L) {
+                timeout(Component.text("automatice sell"), 60L * 1000L) {
                     selected.apply {
                         clear()
                         addAll(defaultSelected.map { it.attachment() })
@@ -393,10 +393,10 @@ class GameDialogDispatcher {
 
             newDialog(piece) {
                 message {
-                    Component.text("채팅창에 배팅 금액을 입력하세요")
+                    Component.text("type the number that you will bet")
                 }
                 actionMessage {
-                    Component.text(("최대 배팅 가능 금액: $max"))
+                    Component.text(("make amount to bet: $max"))
                 }
                 terminal { text ->
                     text.toIntOrNull()?.let { value ->
@@ -406,14 +406,14 @@ class GameDialogDispatcher {
                 }
                 button(PaperGameConfig.centerBox) {
                     actionMessage {
-                        Component.text("취소")
+                        Component.text("cancel")
                     }
                     onClick { _, _, _ ->
                         channel.trySend(0)
                         disposeCurrentDialog()
                     }
                 }
-                timeout(Component.text("배팅"), 15L * 1000L) {
+                timeout(Component.text("bet"), 15L * 1000L) {
                     channel.trySend(0)
                     disposeCurrentDialog()
                 }
@@ -431,21 +431,21 @@ class GameDialogDispatcher {
             val loc = paperPiece.stand.location
             val infoMap = magics.associateWith {
                 when(it) {
-                    Magic.Angel -> "천사" to "통행료 1회 면제"
-                    Magic.Arrest -> "긴급체포" to "즉시 감옥으로 이동"
-                    Magic.Earthquake -> "지진" to "지정한 부동산 등급 하락"
-                    Magic.GiftProperty -> "마음의 선물" to "자신의 부동산 하나 증여"
-                    Magic.Moonwalk -> "문워크" to "주사위를 던져 뒤로 이동"
-                    Magic.MoveToSeoul -> "서울구경" to "서울로 즉시 이동"
-                    Magic.MoveToStart -> "초심찾기" to "시작지점으로 이동"
-                    Magic.Overprice -> "바가지 요금" to "지정한 부동산 통행료 x2"
-                    Magic.Pickpocket -> "소매치기" to "주사위를 하나 던져 지나가며 소매치기"
-                    Magic.Punishment -> "천벌" to "감옥에 있는 대상을 자신의 부동산으로 소환"
-                    Magic.Push -> "밀치기" to "지정한 대상을 뒤로 한칸 이동"
-                    Magic.QuadrupleDice -> "쿼드러플 주사위" to "다음 주사위는 4개"
-                    Magic.SingleDice -> "싱글 주사위" to "다음 주사위는 1개"
-                    Magic.Storm -> "폭풍우" to "무작위 땅으로 즉시 이동"
-                    Magic.TripleDice -> "트리플 주사위" to "다음 주사위는 3개"
+                    Magic.Angel -> "angle" to "can pass free once"
+                    Magic.Arrest -> "emergency arrest" to "moved to prison immediately"
+                    Magic.Earthquake -> "earthquake" to "downgrade a land"
+                    Magic.GiftProperty -> "a persent" to "givaway a land"
+                    Magic.Moonwalk -> "moonwalk" to "throw the dice but goes backward"
+                    Magic.MoveToSeoul -> "visit to Seoul" to "moved to Seoul immediately"
+                    Magic.MoveToStart -> "going back to the first" to "moved immediately to the start"
+                    Magic.Overprice -> "overprice" to "make a cost of land X2"
+                    Magic.Pickpocket -> "pickpocket" to "pickpocketing while moving a amount of 1 dice"
+                    Magic.Punishment -> "scourge" to "summons a person in prison into your land"
+                    Magic.Push -> "knockback" to "moving a person backwards once who you have chosen"
+                    Magic.QuadrupleDice -> "4X dice" to "your next dice will be 4"
+                    Magic.SingleDice -> "1X dice" to "your next dice will be 1"
+                    Magic.Storm -> "thunderstrom" to "moved to a random land"
+                    Magic.TripleDice -> "3X dice" to "your next dice will be 3"
                 }
             }
             var currentMagic: Magic = magics.random()
@@ -470,7 +470,7 @@ class GameDialogDispatcher {
                 Bukkit.getServer().showTitle(
                     Title.title(
                         Component.text(info.first).color(NamedTextColor.GOLD),
-                        Component.text("보드를 클릭하여 마법을 선택하세요"),
+                        Component.text("click the board to chose your magic"),
                         Title.Times.of(
                             Duration.ofMillis(0),
                             Duration.ofSeconds(1),
@@ -567,21 +567,21 @@ class GameDialogDispatcher {
     }
     
     private fun messageOf(message: GameMessage) = when(message) {
-        GameMessage.ROLL_THE_DICE -> "보드를 클릭하여 주사위를 굴리세요" to "주사위"
-        GameMessage.ACQUISITION -> "부동산을 클릭하여 인수하세요" to "인수"
-        GameMessage.UPGRADE -> "부동산을 클릭하여 업그레이드하세요" to "부동산 업그레이드"
-        GameMessage.SEIZURE -> "매각할 부동산을 선택하세요" to "부동산 매각"
-        GameMessage.BETTING -> "배팅할 금액을 채팅창에 입력하세요" to "금액 배팅"
-        GameMessage.ROLL_THE_DICE_FOR_GAMBLE -> "보드를 클릭하여 운명의 주사위를 굴리세요" to "운명의 주사위"
-        GameMessage.ZONE_FOR_PORTAL -> "이동할 위치를 선택해주세요" to "포탈"
-        GameMessage.TAX -> "국세청을 클릭하여 납부할 금액을 설정하세요" to "국세청"
-        GameMessage.PIECE_FOR_PUSH -> "밀쳐낼 대상을 선택하세요" to "대상 선택"
-        GameMessage.ZONE_FOR_OVERPRICE -> "바가지 요금을 적용할 부동산을 선택하세요" to "부동산 선택"
-        GameMessage.PIECE_FOR_GIFT_PROPERTY -> "증여할 대상을 선택하세요" to "대상 선택"
-        GameMessage.ZONE_FOR_GIFT_PROPERTY -> "증여할 부동산을 선택하세요" to "자신의 부동산 선택"
-        GameMessage.ROLL_THE_DICE_FOR_MOONWALK -> "보드를 클릭하여 문워크 주사위를 굴리세요" to "문워크 주사위"
-        GameMessage.ZONE_FOR_EARTHQUAKE -> "지진을 일으킬 부동산을 선택하세요" to "부동산 선택"
-        GameMessage.MAGIC -> "보드를 클릭하여 마법을 선택하세요" to "마법"
+        GameMessage.ROLL_THE_DICE -> "click the board to roll the dice " to "dice"
+        GameMessage.ACQUISITION -> "click the land to buy it" to "buy"
+        GameMessage.UPGRADE -> "click the land to upgrade" to "upgrade land"
+        GameMessage.SEIZURE -> "click which land to sell" to "sell land"
+        GameMessage.BETTING -> "type the number that you will bet" to "money bet"
+        GameMessage.ROLL_THE_DICE_FOR_GAMBLE -> "click the board to roll the dice of fate" to "dice of fate"
+        GameMessage.ZONE_FOR_PORTAL -> "click a place that u will move to" to "portal"
+        GameMessage.TAX -> "click the revenue to choose the tax you will pay" to "revenue"
+        GameMessage.PIECE_FOR_PUSH -> "choose a person that you will push" to "choose person"
+        GameMessage.ZONE_FOR_OVERPRICE -> "choose your land for overprice" to "choose land"
+        GameMessage.PIECE_FOR_GIFT_PROPERTY -> "choose a person to gift" to "choose person"
+        GameMessage.ZONE_FOR_GIFT_PROPERTY -> "choose a land to gift" to "choose own land"
+        GameMessage.ROLL_THE_DICE_FOR_MOONWALK -> "click the board to roll the moonwalk dice" to "moonwalk dice"
+        GameMessage.ZONE_FOR_EARTHQUAKE -> "choose the land that will be attacked by an earthquake" to "choose land"
+        GameMessage.MAGIC -> "click the land to choose the magic" to "magic"
     }
 
     private suspend fun tax(taxDialog: GameDialogTax): Int {
@@ -619,7 +619,7 @@ class GameDialogDispatcher {
                 Bukkit.getServer().showTitle(
                     Title.title(
                         Component.text(amount).color(NamedTextColor.DARK_GREEN).decorate(TextDecoration.BOLD),
-                        Component.text("국세청을 클릭하여 납부액을 결정하세요"),
+                        Component.text("click the revenue to choose the tax you will pay"),
                         Title.Times.of(
                             Duration.ofMillis(0),
                             Duration.ofSeconds(1),
